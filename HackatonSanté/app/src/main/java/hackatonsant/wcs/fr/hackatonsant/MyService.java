@@ -7,8 +7,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,21 +18,26 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class MyService extends Service {
 
-    public static final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Quizz");
+    public static final String TAG = "MyService";
+    public static final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Alerts");
 
-    public MyService() {
-
-    }
+    public MyService() {}
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-
+        Log.d(TAG, "Service Created");
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                boolean knows = PreferenceManager.getDefaultSharedPreferences(MyService.this).getBoolean("Knows", true);
+                if (knows) {
+                    AlertModel model = dataSnapshot.getValue(AlertModel.class);
+
                     displayNotification();
+                }
 
             }
 
@@ -59,7 +65,6 @@ public class MyService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

@@ -59,9 +59,11 @@ public class EmergencyActivity extends AppCompatActivity {
     private Marker userMarker;
     private Geocoder geocoder;
     private List<Address> addresses;
+    private String address;
 
     private FirebaseDatabase database;
-    private DatabaseReference ref;
+    private DatabaseReference refDevices;
+    private DatabaseReference refAlert;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -71,6 +73,7 @@ public class EmergencyActivity extends AppCompatActivity {
 
     private SpiceManager spiceManager = new SpiceManager(GsonGoogleHttpClientSpiceService.class);
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +81,9 @@ public class EmergencyActivity extends AppCompatActivity {
         geocoder = new Geocoder(this, Locale.getDefault());
 
         database = FirebaseDatabase.getInstance();
-        ref = database.getReference("Devices");
+        refDevices = database.getReference("Devices");
+        refAlert = database.getReference("Alerts");
+
 
         mapView = (MapView) findViewById(R.id.mapViewEmergency);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
@@ -106,7 +111,7 @@ public class EmergencyActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                 String city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
                 String country = addresses.get(0).getCountryName();
@@ -151,38 +156,7 @@ public class EmergencyActivity extends AppCompatActivity {
             }
         });
 
-        callEmergency.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String number = "+33698631580";
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + number));
-                if (ActivityCompat.checkSelfPermission(EmergencyActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    if (ContextCompat.checkSelfPermission(EmergencyActivity.this, Manifest.permission.CALL_PHONE)
-                            != PackageManager.PERMISSION_GRANTED) {
-
-                        Log.d(TAG, "Location Permission refused, asking user");
-
-                        ActivityCompat.requestPermissions(EmergencyActivity.this,
-                                new String[]{
-                                        Manifest.permission.CALL_PHONE
-                                }, 1);
-                    }
-
-                    return;
-                }
-                startActivity(intent);
-            }
-        });
-
-        ref.addChildEventListener(new ChildEventListener() {
+        refDevices.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
@@ -215,6 +189,36 @@ public class EmergencyActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        callEmergency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertModel alertModel = new AlertModel(userLat, userLon, false, address);
+                refAlert.push().setValue(alertModel);
+
+
+                String number = "+33698631580";
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + number));
+                if (ActivityCompat.checkSelfPermission(EmergencyActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+                    if (ContextCompat.checkSelfPermission(EmergencyActivity.this, Manifest.permission.CALL_PHONE)
+                            != PackageManager.PERMISSION_GRANTED) {
+
+                        Log.d(TAG, "Location Permission refused, asking user");
+
+                        ActivityCompat.requestPermissions(EmergencyActivity.this,
+                                new String[]{
+                                        Manifest.permission.CALL_PHONE
+                                }, 1);
+                    }
+
+                    return;
+                }
+                startActivity(intent);
             }
         });
     }

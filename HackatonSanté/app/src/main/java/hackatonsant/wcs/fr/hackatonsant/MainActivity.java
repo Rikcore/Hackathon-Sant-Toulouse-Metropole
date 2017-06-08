@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startService(new Intent(MainActivity.this, MyService.class));
         String userName = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getString("UserName", null);
 
         if (userName == null) {
