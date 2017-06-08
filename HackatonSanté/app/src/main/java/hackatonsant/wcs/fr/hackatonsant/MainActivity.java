@@ -9,7 +9,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,13 +27,22 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.octo.android.robospice.GsonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -52,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button buttonAddDeviceMain;
     private Button buttonEmergency;
+
+    private FirebaseDatabase database;
+    private DatabaseReference ref;
 
     private SpiceManager spiceManager = new SpiceManager(GsonGoogleHttpClientSpiceService.class);
 
@@ -73,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonEmergency = (Button)findViewById(R.id.buttonCallEmergency);
         buttonEmergency.setOnClickListener(this);
 
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference("Devices");
 
         mapView = (MapView) findViewById(R.id.mapView);
 
@@ -120,6 +133,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);
                 }
+            }
+        });
+
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                DefibrilateurPrivateModel model = dataSnapshot.getValue(DefibrilateurPrivateModel.class);
+
+                Double currentLat = model.getLat();
+                Double currentLon = model.getLon();
+                String title = model.getImplantation();
+                LatLng latLng = new LatLng(currentLat, currentLon);
+                Log.d(TAG, latLng.toString());
+                map.addMarker(new MarkerOptions().position(latLng).title(title));
+                mapView.onResume();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }

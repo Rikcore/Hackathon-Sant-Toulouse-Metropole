@@ -1,5 +1,6 @@
 package hackatonsant.wcs.fr.hackatonsant;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +50,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(SignUpActivity.this, "Vous devez renseigner votre nom", Toast.LENGTH_SHORT).show();
                 } else {
                     String userName = editTextName.getText().toString();
-                    //PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this).edit().putString("UserName", userName).apply();
+                    PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this).edit().putString("UserName", userName).apply();
                     UserModel user = new UserModel(userName, knows);
 
                     if (knows) {
@@ -57,6 +58,14 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                     else {
                         refDoesnt.push().setValue(user);
+                    }
+
+                    if(!owns) {
+                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        startActivity(new Intent(SignUpActivity.this, AddDeviceActivity.class));
+                        finish();
                     }
                 }
 
