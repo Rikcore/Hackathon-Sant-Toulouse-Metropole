@@ -25,9 +25,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.octo.android.robospice.GsonGoogleHttpClientSpiceService;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
+    public static final int DEFAULT_RADIUS = 5000;
     public static final String TAG = "MainActivity";
 
     private MapView mapView;
@@ -41,11 +49,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button buttonAddDeviceMain;
 
+    private SpiceManager spiceManager = new SpiceManager(GsonGoogleHttpClientSpiceService.class);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         buttonAddDeviceMain = (Button) findViewById(R.id.buttonAddDeviceMain);
@@ -66,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 userLon = location.getLongitude();
                 LatLng userLocation = new LatLng(userLat, userLon);
                 updateMapWithUserPosition(userLocation);
+                performRequest(userLat, userLon);
+                Log.d(TAG, "Performed Request");
 
             }
 
@@ -103,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart(){
         super.onStart();
 
-        //spiceManager.start(this);
+        spiceManager.start(this);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -133,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop(){
         super.onStop();
 
+        spiceManager.shouldStop();
         locationManager.removeUpdates(locationListener);
     }
 
@@ -187,6 +199,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         map.animateCamera(CameraUpdateFactory.zoomTo(15));
         Log.d(TAG, "Map Updated");
         mapView.onResume();
+    }
+
+    private void performRequest(Double lat, Double lon){
+
+        String logMessage = String.format(Locale.US, "Performing request for %f, %f , waiting for callback.",
+                lat,
+                lon);
+        Log.d(TAG, logMessage);
+        DefibrillateurRequestModel request = new DefibrillateurRequestModel(lat, lon, DEFAULT_RADIUS);
+        spiceManager.execute(request, new defibRequestListener());
+    }
+
+    private class defibRequestListener implements RequestListener<DefibrillateurPublicModel>{
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+            Log.d(TAG, "Request failed");
+
+        }
+
+        @Override
+        public void onRequestSuccess(DefibrillateurPublicModel defibrillateurPublicModel) {
+
+            Log.d(TAG, "Request Success");
+            List records = defibrillateurPublicModel.getRecords();
+            int size = records.size();
+            Log.d(TAG, "Got " + size + " items from API");
+        }
     }
 
     @Override
