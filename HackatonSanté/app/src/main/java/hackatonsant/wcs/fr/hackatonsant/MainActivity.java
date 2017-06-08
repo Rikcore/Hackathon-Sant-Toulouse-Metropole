@@ -39,15 +39,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Double userLat;
     private Double userLon;
 
-    private Button buttonAddDevice;
+    private Button buttonAddDeviceMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        buttonAddDevice = (Button) findViewById(R.id.buttonAddDevice);
-            buttonAddDevice.setOnClickListener(this);
+
+
+        buttonAddDeviceMain = (Button) findViewById(R.id.buttonAddDeviceMain);
+            buttonAddDeviceMain.setOnClickListener(this);
 
         mapView = (MapView) findViewById(R.id.mapView);
 
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
         map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         map.animateCamera(CameraUpdateFactory.zoomTo(15));
+        Log.d(TAG, "Map Updated");
         mapView.onResume();
     }
 
@@ -191,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (v.getId()){
 
-            case R.id.buttonAddDevice :
+            case R.id.buttonAddDeviceMain:
 
                 startActivity(new Intent(MainActivity.this, AddDeviceActivity.class));
                 break;
