@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="app_name">Hackaton Santé</string>
     <string name="valider">Valider</string>
     <string name="nomHint">Nom</string>
     <string name="ownDevice">Je possède un défibrillateur</string>
     <string name="usesDevice">Je sais utiliser un défibrillateur</string>
+    <string name="app_name">Défib\' Toulouse</string>
 </resources>
