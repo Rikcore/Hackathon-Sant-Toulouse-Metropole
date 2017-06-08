@@ -51,6 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
                 } else {
                     String userName = editTextName.getText().toString();
                     PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this).edit().putString("UserName", userName).apply();
+                    PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this).edit().putBoolean("Knows", knows).apply();
                     UserModel user = new UserModel(userName, knows);
 
                     if (knows) {
