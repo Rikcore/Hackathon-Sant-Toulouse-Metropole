@@ -26,31 +26,32 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.octo.android.robospice.GsonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final Double DEFAULT_LAT_TLSE = 43.608316;  //Lattitude St Sernin Tlse
+    public static final Double DEFAULT_LON_TLSE = 1.441804;   //Longitude St Sernin Tlse
     public static final int DEFAULT_RADIUS = 5000;
     public static final String TAG = "MainActivity";
 
     private MapView mapView;
     private GoogleMap map;
+    private Marker userMarker;
+    private LatLng userPos;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -96,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-
                 Log.d(TAG, "Position Changed");
                 userLat = location.getLatitude();
                 userLon = location.getLongitude();
@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 updateMapWithUserPosition(userLocation);
                 performRequest(userLat, userLon);
                 Log.d(TAG, "Performed Request");
-
             }
 
             @Override
@@ -129,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "Map ready");
 
                 map = googleMap;
+                LatLng defautlPos = new LatLng(DEFAULT_LAT_TLSE, DEFAULT_LON_TLSE);
+                userMarker = map.addMarker(new MarkerOptions()
+                        .position(defautlPos)
+                        .title("Vous êtes ici")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 if (userLat != null & userLon != null) {
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);
@@ -255,11 +259,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateMapWithUserPosition(LatLng latLng) {
 
-        map.clear();
-        map.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title("vous êtes ici")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        userMarker.setPosition(latLng);
         map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         map.animateCamera(CameraUpdateFactory.zoomTo(15));
         Log.d(TAG, "Map Updated");

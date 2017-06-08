@@ -31,6 +31,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.octo.android.robospice.GsonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -40,24 +42,22 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static hackatonsant.wcs.fr.hackatonsant.R.id.buttonCallEmergency;
-import static hackatonsant.wcs.fr.hackatonsant.R.id.mapView;
-import static hackatonsant.wcs.fr.hackatonsant.R.id.mapViewEmergency;
-
 public class EmergencyActivity extends AppCompatActivity {
 
     public static final String TAG = "EmergencyActivity";
     public static final int DEFAULT_RADIUS = 5000;
 
-    TextView textViewAddress;
-    TextView textViewTest;
-    Button callEmergency;
+    private TextView textViewAddress;
+    private TextView textViewTest;
+    private Button callEmergency;
 
-
-    MapView mapView;
+    private MapView mapView;
     private GoogleMap map;
-    Geocoder geocoder;
-    List<Address> addresses;
+    private Geocoder geocoder;
+    private List<Address> addresses;
+
+    private FirebaseDatabase database;
+    private DatabaseReference ref;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -73,6 +73,8 @@ public class EmergencyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_emergency);
         geocoder = new Geocoder(this, Locale.getDefault());
 
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference();
 
         mapView = (MapView) findViewById(R.id.mapViewEmergency);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
