@@ -31,6 +31,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.octo.android.robospice.GsonGoogleHttpClientSpiceService;
@@ -53,6 +56,7 @@ public class EmergencyActivity extends AppCompatActivity {
 
     private MapView mapView;
     private GoogleMap map;
+    private Marker userMarker;
     private Geocoder geocoder;
     private List<Address> addresses;
 
@@ -74,7 +78,7 @@ public class EmergencyActivity extends AppCompatActivity {
         geocoder = new Geocoder(this, Locale.getDefault());
 
         database = FirebaseDatabase.getInstance();
-        ref = database.getReference();
+        ref = database.getReference("Devices");
 
         mapView = (MapView) findViewById(R.id.mapViewEmergency);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
@@ -109,7 +113,7 @@ public class EmergencyActivity extends AppCompatActivity {
                 String postalCode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();
 
-                textViewAddress.setText("Adresse à donner : " + address + " " + postalCode + " " + city);
+                textViewAddress.setText("Adresse à donner aux secours: " + address + " " + postalCode + " " + city);
 
             }
 
@@ -135,6 +139,11 @@ public class EmergencyActivity extends AppCompatActivity {
                 Log.d(TAG, "Map ready");
 
                 map = googleMap;
+                LatLng defautlPos = new LatLng(MainActivity.DEFAULT_LAT_TLSE, MainActivity.DEFAULT_LON_TLSE);
+                userMarker = map.addMarker(new MarkerOptions()
+                        .position(defautlPos)
+                        .title("Vous êtes ici")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 if (userLat != null & userLon != null) {
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);
@@ -173,7 +182,45 @@ public class EmergencyActivity extends AppCompatActivity {
             }
         });
 
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                DefibrilateurPrivateModel model = dataSnapshot.getValue(DefibrilateurPrivateModel.class);
+
+                Double currentLat = model.getLat();
+                Double currentLon = model.getLon();
+                String title = model.getImplantation();
+                LatLng latLng = new LatLng(currentLat, currentLon);
+                Log.d(TAG, latLng.toString());
+                map.addMarker(new MarkerOptions().position(latLng).title(title));
+                mapView.onResume();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+
+
+
 
     @Override
     protected void onStart() {
@@ -201,7 +248,6 @@ public class EmergencyActivity extends AppCompatActivity {
                 userLat = lastLocation.getLatitude();
                 userLon = lastLocation.getLongitude();
             }
-
         }
     }
 
@@ -249,19 +295,13 @@ public class EmergencyActivity extends AppCompatActivity {
                             })
                             .show();
                 }
-
             }
-
         }
     }
 
     private void updateMapWithUserPosition(LatLng latLng) {
 
-        map.clear();
-        map.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title("vous êtes ici")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        userMarker.setPosition(latLng);
         map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         map.animateCamera(CameraUpdateFactory.zoomTo(15));
         Log.d(TAG, "Map Updated");
@@ -306,6 +346,4 @@ public class EmergencyActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }
