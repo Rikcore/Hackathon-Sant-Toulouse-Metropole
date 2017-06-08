@@ -147,7 +147,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String title = model.getImplantation();
                 LatLng latLng = new LatLng(currentLat, currentLon);
                 Log.d(TAG, latLng.toString());
-                map.addMarker(new MarkerOptions().position(latLng).title(title));
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
+                map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon));
                 mapView.onResume();
             }
 
