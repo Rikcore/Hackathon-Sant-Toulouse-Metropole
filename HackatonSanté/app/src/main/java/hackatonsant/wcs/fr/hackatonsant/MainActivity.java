@@ -227,6 +227,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             List records = defibrillateurPublicModel.getRecords();
             int size = records.size();
             Log.d(TAG, "Got " + size + " items from API");
+            List<Double> coord = defibrillateurPublicModel.getRecords().get(1).getGeometry().getCoordinates();
+            Double defLat = coord.get(1);
+            Double defLon = coord.get(0);
+            LatLng defPos = new LatLng(defLat, defLon);
+            map.addMarker(new MarkerOptions().position(defPos));
+            mapView.onResume();
         }
     }
 
