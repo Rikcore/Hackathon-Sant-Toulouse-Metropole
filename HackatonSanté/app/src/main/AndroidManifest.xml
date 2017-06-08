@@ -37,6 +37,8 @@
             android:name="com.octo.android.robospice.GsonGoogleHttpClientSpiceService"
             android:exported="false" />
 
+        <activity android:name=".SignUpActivity"></activity>
+
         <activity android:name=".EmergencyActivity"></activity>
     </application>
 
