@@ -3,6 +3,7 @@ package hackatonsant.wcs.fr.hackatonsant;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,6 +15,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,7 +26,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     public static final String TAG = "MainActivity";
 
@@ -36,10 +39,15 @@ public class MainActivity extends AppCompatActivity {
     private Double userLat;
     private Double userLon;
 
+    private Button buttonAddDevice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        buttonAddDevice = (Button) findViewById(R.id.buttonAddDevice);
+            buttonAddDevice.setOnClickListener(this);
 
         mapView = (MapView) findViewById(R.id.mapView);
 
@@ -176,5 +184,17 @@ public class MainActivity extends AppCompatActivity {
         map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         map.animateCamera(CameraUpdateFactory.zoomTo(15));
         mapView.onResume();
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.buttonAddDevice :
+
+                startActivity(new Intent(MainActivity.this, AddDeviceActivity.class));
+                break;
+        }
     }
 }
