@@ -2,14 +2,26 @@ package hackatonsant.wcs.fr.hackatonsant;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class AddDeviceActivity extends AppCompatActivity implements View.OnClickListener{
+
+    public static final String TAG = "AddDeviceActivity";
 
     private EditText editTextAdresse;
     private EditText editTextAccessibilite;
@@ -17,7 +29,16 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
     private EditText editTextNomSite;
     private EditText editTextTypeStructure;
 
+    private Double lat;
+    private Double lon;
+
     private Button buttonAddDevice;
+
+    private FirebaseDatabase database;
+    private DatabaseReference ref;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
 
     @Override
@@ -34,6 +55,34 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         buttonAddDevice = (Button) findViewById(R.id.buttonAddDevice);
             buttonAddDevice.setOnClickListener(this);
 
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference("Devices");
+
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+                lat = location.getLatitude();
+                lon = location.getLongitude();
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
 
         final AlertDialog needLocation= new AlertDialog.Builder(AddDeviceActivity.this)
        .setMessage("Veuillez vous placer près du défibrillateur pour faciliter sa géolocalisation, puis appuyer sur Continuer")
@@ -53,7 +102,7 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
                 .show();
     }
 
-    private DefibrilateurPrivate createPrivateDevice(){
+    private DefibrilateurPrivateModel createPrivateDevice(){
 
         String accessibilite = editTextAccessibilite.getText().toString();
         String implantation = editTextImplantation.getText().toString();
@@ -61,12 +110,47 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         String nomSite = editTextNomSite.getText().toString();
         String typeStructure = editTextTypeStructure.getText().toString();
 
-        DefibrilateurPrivate defibrilateurPrivate =new DefibrilateurPrivate(adresse);
-        defibrilateurPrivate.setAccessibilite(accessibilite);
-        defibrilateurPrivate.setImplantation(implantation);
-        defibrilateurPrivate.setNomSite(nomSite);
-        defibrilateurPrivate.setTypeStructure(typeStructure);
-        return defibrilateurPrivate;
+        DefibrilateurPrivateModel defibrilateurPrivateModel =new DefibrilateurPrivateModel(adresse, lat, lon);
+        defibrilateurPrivateModel.setAccessibilite(accessibilite);
+        defibrilateurPrivateModel.setImplantation(implantation);
+        defibrilateurPrivateModel.setNomSite(nomSite);
+        defibrilateurPrivateModel.setTypeStructure(typeStructure);
+        return defibrilateurPrivateModel;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (ContextCompat.checkSelfPermission(AddDeviceActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            Log.d(TAG, "Location Permission refused, asking user");
+
+            ActivityCompat.requestPermissions(AddDeviceActivity.this,
+                    new String[]{
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION
+                    }, 0);
+        } else {
+
+            Log.d(TAG, "Location Permission Already Granted");
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (lastLocation != null) {
+                lat = lastLocation.getLatitude();
+                lon = lastLocation.getLongitude();
+            }
+
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        locationManager.removeUpdates(locationListener);
     }
 
     @Override
@@ -76,8 +160,10 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.buttonAddDevice:
 
-                DefibrilateurPrivate finalDevice = createPrivateDevice();
-                String toto = "toto";
+                DefibrilateurPrivateModel finalDevice = createPrivateDevice();
+                ref.push().setValue(finalDevice);
+                startActivity(new Intent(AddDeviceActivity.this, MainActivity.class));
+
         }
     }
 }

@@ -1,26 +1,48 @@
 package hackatonsant.wcs.fr.hackatonsant;
 
 
-public class DefibrilateurPrivate {
+public class DefibrilateurPrivateModel {
 
     public static final String COMMUNE = "TOULOUSE";
 
-    private String commune;
-    private String accessibilite;
-    private String implantation;
-    private String adresse;
-    private String nomSite;
-    private String typeStructure;
+    public String commune;
+    public String accessibilite;
+    public String implantation;
+    public String adresse;
+    public String nomSite;
+    public String typeStructure;
+    public Double lat;
+    public Double lon;
 
-    public DefibrilateurPrivate(String adresse){
+    public DefibrilateurPrivateModel(){};
+
+    public DefibrilateurPrivateModel(String adresse, Double lat, Double lon){
 
         this.adresse = adresse;
         this.commune = COMMUNE;
+        this.lat = lat;
+        this.lon = lon;
     }
 
 
     public String getCommune() {
         return commune;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 
     public void setCommune(String commune) {

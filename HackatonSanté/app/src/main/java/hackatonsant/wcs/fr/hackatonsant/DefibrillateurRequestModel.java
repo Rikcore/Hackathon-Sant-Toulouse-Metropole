@@ -5,14 +5,10 @@ import android.util.Log;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 
 import java.util.Locale;
 
-/**
- * Created by keru on 08/06/17.
- */
 
 public class DefibrillateurRequestModel extends GoogleHttpClientSpiceRequest<DefibrillateurPublicModel> {
 
