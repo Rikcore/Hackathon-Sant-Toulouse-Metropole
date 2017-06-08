@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MapView mapView;
     private GoogleMap map;
     private Marker userMarker;
-    private LatLng userPos;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -65,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseDatabase database;
     private DatabaseReference ref;
 
+    private Intent intent;
+
     private SpiceManager spiceManager = new SpiceManager(GsonGoogleHttpClientSpiceService.class);
 
     @Override
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startService(new Intent(MainActivity.this, MyService.class));
         String userName = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getString("UserName", null);
 
         if (userName == null) {
@@ -183,6 +183,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
+        intent = getIntent();
+        if (intent.hasExtra("Alert")) {
+
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Allez vous intervenir sur cet incident ?")
+                    .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String alertId = intent.getStringExtra("Alert");
+                            ref.child(alertId).removeValue();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+
+        }
         spiceManager.start(this);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -207,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         }
+        startService(new Intent(MainActivity.this, MyService.class));
     }
 
     @Override
