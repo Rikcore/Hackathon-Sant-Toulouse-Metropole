@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -56,7 +57,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String userName = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getString("UserName", null);
 
+        if (userName == null) {
+
+            Log.d(TAG, "No User Logged, Starting SignUp");
+            startActivity(new Intent(MainActivity.this, SignUpActivity.class));
+        }
+        Log.d(TAG, userName + " Logged In");
         buttonAddDeviceMain = (Button) findViewById(R.id.buttonAddDeviceMain);
             buttonAddDeviceMain.setOnClickListener(this);
 
