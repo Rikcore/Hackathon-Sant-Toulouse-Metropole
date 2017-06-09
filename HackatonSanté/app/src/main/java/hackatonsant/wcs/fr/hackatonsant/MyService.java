@@ -144,6 +144,7 @@ public class MyService extends Service {
                 .setContentText("Un incident a lieu au : "+ model.getLocation())
                 .setSmallIcon(R.mipmap.minidefibrillateur)
                 .setContentIntent(PendingIntent.getActivity(this, 0, intent, 0))
+                .setAutoCancel(true)
                 .build();
 
         notifManager.notify(0, noti);
