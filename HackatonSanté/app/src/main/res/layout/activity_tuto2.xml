@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:srcCompat="@mipmap/DAE2"
+        android:layout_below="@+id/textViewTitleStepTuto1"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/textViewTuto2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57dp"
+        tools:text="@string/textViewTuto2" />
+
+    <TextView
+        android:id="@+id/textViewTitleStepTuto1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/textViewTitleStepTuto2"
+        android:layout_marginTop="33dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+    <Button
+        android:id="@+id/buttonSkipTuto2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="37dp"
+        android:text="Etape 3"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

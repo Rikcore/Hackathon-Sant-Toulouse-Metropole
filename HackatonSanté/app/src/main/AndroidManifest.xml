@@ -40,6 +40,13 @@
 
         <activity android:name=".SignUpActivity" />
         <activity android:name=".EmergencyActivity" />
+        <activity android:name=".Tuto1Activity"/>
+        <activity android:name=".Tuto2Activity"/>
+        <activity android:name=".Tuto3Activity"/>
+        <activity android:name=".Tuto4Activity"/>
+        <activity android:name=".Tuto5Activity"/>
+
+
 
         <service
             android:name=".MyService"
