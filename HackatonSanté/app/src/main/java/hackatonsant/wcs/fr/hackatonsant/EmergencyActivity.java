@@ -12,11 +12,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -53,6 +55,7 @@ public class EmergencyActivity extends AppCompatActivity {
     private TextView textViewAddress;
     private TextView textViewTest;
     private Button callEmergency;
+    private ConstraintLayout addressLayout;
 
     private MapView mapView;
     private GoogleMap map;
@@ -88,7 +91,9 @@ public class EmergencyActivity extends AppCompatActivity {
         mapView = (MapView) findViewById(R.id.mapViewEmergency);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
         callEmergency = (Button) findViewById(R.id.buttonEmergency);
-        textViewTest = (TextView)findViewById(R.id.textViewTest);
+        addressLayout = (ConstraintLayout) findViewById(R.id.addressLayout);
+        addressLayout.setVisibility(View.INVISIBLE);
+
 
         mapView.onCreate(savedInstanceState);
 
@@ -118,7 +123,8 @@ public class EmergencyActivity extends AppCompatActivity {
                 String postalCode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();
 
-                textViewAddress.setText("Adresse à donner aux secours: " + address + " " + postalCode + " " + city);
+                addressLayout.setVisibility(View.VISIBLE);
+                textViewAddress.setText(String.format("Adresse à donner aux secours :%n%s%n%s %s",address,postalCode,city));
 
             }
 
@@ -145,10 +151,11 @@ public class EmergencyActivity extends AppCompatActivity {
 
                 map = googleMap;
                 LatLng defautlPos = new LatLng(MainActivity.DEFAULT_LAT_TLSE, MainActivity.DEFAULT_LON_TLSE);
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.marker_man);
                 userMarker = map.addMarker(new MarkerOptions()
                         .position(defautlPos)
                         .title("Vous êtes ici")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        .icon(icon));
                 if (userLat != null & userLon != null) {
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);
@@ -169,6 +176,7 @@ public class EmergencyActivity extends AppCompatActivity {
                 if (currentLat != null) {
                     LatLng latLng = new LatLng(currentLat, currentLon);
                     Log.d(TAG, latLng.toString());
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
                     map.addMarker(new MarkerOptions().position(latLng).title(title));
                     mapView.onResume();
                 }

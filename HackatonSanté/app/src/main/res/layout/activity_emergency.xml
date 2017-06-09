@@ -7,20 +7,10 @@
     tools:context="hackatonsant.wcs.fr.hackatonsant.EmergencyActivity"
     android:background="@drawable/gradientbackground">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapViewEmergency"
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonEmergency"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
@@ -28,28 +18,129 @@
         android:text="Appel des urgences"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@drawable/button_shape"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintLeft_creator="1" />
 
-    <TextView
-        android:id="@+id/textViewAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="350dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintLeft_creator="1">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapViewEmergency"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#FFFFFF"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:srcCompat="@mipmap/minidefibrillateur"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/mapViewEmergency"
+            android:layout_alignStart="@+id/mapViewEmergency"
+            android:layout_marginBottom="7dp" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignTop="@+id/imageView2"
+            android:layout_marginLeft="167dp"
+            android:layout_marginStart="167dp"
+            android:layout_toEndOf="@+id/imageView2"
+            android:layout_toRightOf="@+id/imageView2"
+            app:srcCompat="@mipmap/mini_housse" />
+
+        <TextView
+            android:id="@+id/textViewPublic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageView2"
+            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
+            android:layout_toEndOf="@+id/imageView2"
+            android:layout_toRightOf="@+id/imageView2"
+            android:text="Défibrillateurs officiels" />
+
+        <TextView
+            android:id="@+id/textViewPrives"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textViewPublic"
+            android:layout_alignBottom="@+id/textViewPublic"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp"
+            android:layout_toEndOf="@+id/imageView3"
+            android:layout_toRightOf="@+id/imageView3"
+            android:text="Défibrillateurs privés" />
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/addressLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="95dp"
+        android:layout_marginEnd="55dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginRight="55dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="96dp"
+        android:background="@drawable/rounded_layou"
         app:layout_constraintBottom_toTopOf="@+id/buttonEmergency"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapViewEmergency" />
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1">
 
-    <TextView
-        android:id="@+id/textViewTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_editor_absoluteY="403dp" />
+        <TextView
+            android:id="@+id/textViewAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
 
 </android.support.constraint.ConstraintLayout>
