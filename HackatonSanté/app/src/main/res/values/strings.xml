@@ -22,6 +22,8 @@ Appuyez sur le bouton si cela vous est demandé. Un défibrillateur entièrement
 Continuez à suivre les indications du DAE jusqu\'à ce que la victime retrouve une respiration normale ou jusqu\'à l\'arrivée des secours.</string>
     <string name="textViewTuto5">Si la respiration redevient normale, arrêtez la réanimation, mais n\'éteignez pas le DAE et laissez les électrodes en place sur la poitrine de la victime. Si celle-ci reste inconsciente, mettez-la sur le côté, en position latérale de sécurité.</string>
     <string name="textViewTutoCredits">Ces contenus sont extraits du guide des gestes qui sauvent de la Croix-Rouge française, remis à chaque participant à une formation PSC 1. Textes : Dr Pascal Cassan, Dr Daniel Meyran, Dr Vincent Hubert - Photo : Valérie Archeno - Illustrations : Philippe Diemunch - Pictogrammes : Yann Brien. </string>
+    <string name="nextStep">Etape Suivante</string>
+    <string name="backMenu">Retour au Menu</string>
 
 
 </resources>

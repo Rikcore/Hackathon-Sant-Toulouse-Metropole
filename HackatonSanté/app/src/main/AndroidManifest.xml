@@ -44,11 +44,16 @@
 
 
       
-        <activity android:name=".Tuto1Activity"/>
-        <activity android:name=".Tuto2Activity"/>
-        <activity android:name=".Tuto3Activity"/>
-        <activity android:name=".Tuto4Activity"/>
-        <activity android:name=".Tuto5Activity"/>
+        <activity android:name=".Tuto1Activity"
+            android:theme="@style/notitlebar"/>
+        <activity android:name=".Tuto2Activity"
+            android:theme="@style/notitlebar"/>
+        <activity android:name=".Tuto3Activity"
+            android:theme="@style/notitlebar"/>
+        <activity android:name=".Tuto4Activity"
+            android:theme="@style/notitlebar"/>
+        <activity android:name=".Tuto5Activity"
+            android:theme="@style/notitlebar"/>
 
 
 
