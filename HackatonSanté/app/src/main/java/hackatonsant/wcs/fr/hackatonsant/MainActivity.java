@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onMapReady(GoogleMap googleMap) {
                 Log.d(TAG, "Map ready");
 
+
+
                 map = googleMap;
                 LatLng defautlPos = new LatLng(DEFAULT_LAT_TLSE, DEFAULT_LON_TLSE);
                 userMarker = map.addMarker(new MarkerOptions()
@@ -202,10 +204,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             DatabaseReference boolRef = FirebaseDatabase.getInstance()
                                     .getReference("Alerts")
-                                    .child(alertId)
-                                    .child("adressed");
+                                    .child(alertId);
 
-                            boolRef.setValue(true);
+                            boolRef.setValue(null);
                             dialog.dismiss();
                         }
                     })

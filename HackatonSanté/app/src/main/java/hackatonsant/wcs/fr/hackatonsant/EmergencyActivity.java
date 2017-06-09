@@ -303,6 +303,14 @@ public class EmergencyActivity extends AppCompatActivity {
                             .show();
                 }
             }
+            case 1 :
+
+                String number = "+33698631580";
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + number));
+                startActivity(intent);
+
+
         }
     }
 
