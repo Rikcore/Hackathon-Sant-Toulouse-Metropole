@@ -133,10 +133,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 map = googleMap;
                 LatLng defautlPos = new LatLng(DEFAULT_LAT_TLSE, DEFAULT_LON_TLSE);
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.marker_man);
                 userMarker = map.addMarker(new MarkerOptions()
                         .position(defautlPos)
                         .title("Vous êtes ici")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        .icon(icon));
                 if (userLat != null & userLon != null) {
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);

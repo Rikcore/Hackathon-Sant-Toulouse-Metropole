@@ -26,6 +26,7 @@ public class MyService extends Service {
 
     public static final String TAG = "MyService";
     public static final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Alerts");
+    AlertModel model;
 
     public LocationManager locationManager;
     public LocationListener locationListener;
@@ -82,11 +83,11 @@ public class MyService extends Service {
 
                 boolean knows = PreferenceManager.getDefaultSharedPreferences(MyService.this).getBoolean("Knows", true);
                 if (knows) {
-                    AlertModel model = dataSnapshot.getValue(AlertModel.class);
+                    model = dataSnapshot.getValue(AlertModel.class);
+
                     Double alertLat = model.getLat();
                     Double alertLon = model.getLon();
                     String alertId = dataSnapshot.getKey();
-
                     float[] results = new float[1];
                     Location.distanceBetween(alertLat, alertLon, userLat, userLon, results);
 
@@ -139,8 +140,8 @@ public class MyService extends Service {
         String finalAlertId = alertId;
         intent.putExtra("Alert", finalAlertId);
         Notification noti = new Notification.Builder(this)
-                .setContentTitle("Wild Tech Quizz")
-                .setContentText("toto")
+                .setContentTitle("Incident en cours")
+                .setContentText("Un incident a lieu au : "+ model.getLocation())
                 .setSmallIcon(R.mipmap.minidefibrillateur)
                 .setContentIntent(PendingIntent.getActivity(this, 0, intent, 0))
                 .build();
