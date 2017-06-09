@@ -24,8 +24,9 @@
         android:id="@+id/buttonSkipTuto2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_shape_pink"
+        android:textColor="#FFFFFF"
         android:text="@string/nextStep"
-
         android:background="@drawable/button_shape"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
@@ -37,6 +38,9 @@
 
     <TextView
         android:id="@+id/textViewTuto2"
+        android:background="@drawable/rounded_textview"
+        android:elevation="4dp"
+        android:padding="10dp"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
