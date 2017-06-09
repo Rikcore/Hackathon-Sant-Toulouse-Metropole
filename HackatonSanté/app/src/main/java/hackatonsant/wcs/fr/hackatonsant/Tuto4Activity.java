@@ -33,6 +33,7 @@ public class Tuto4Activity extends AppCompatActivity {
                 Intent tuto5 = new Intent(Tuto4Activity.this, Tuto5Activity.class);
 
                 startActivity(tuto5);
+                finish();
             }
         });
     }

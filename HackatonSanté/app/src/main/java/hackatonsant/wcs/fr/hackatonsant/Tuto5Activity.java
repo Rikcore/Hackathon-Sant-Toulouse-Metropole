@@ -34,6 +34,7 @@ public class Tuto5Activity extends AppCompatActivity {
                 Intent returnmain = new Intent(Tuto5Activity.this, MainActivity.class);
 
                 startActivity(returnmain);
+                finish();
             }
         });
     }

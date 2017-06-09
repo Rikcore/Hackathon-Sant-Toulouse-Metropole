@@ -71,7 +71,7 @@
         android:id="@+id/buttonTutoReturnMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="MENu"
+        tools:text="@string/backMenu"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toBottomOf="parent"
