@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button buttonAddDeviceMain;
     private Button buttonEmergency;
+    private Button buttonTutorial;
 
     private FirebaseDatabase database;
     private DatabaseReference ref;
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonAddDeviceMain.setOnClickListener(this);
         buttonEmergency = (Button)findViewById(R.id.buttonCallEmergency);
         buttonEmergency.setOnClickListener(this);
+        buttonTutorial= (Button)findViewById(R.id.buttonTutorial);
+        buttonTutorial.setOnClickListener(this);
 
         database = FirebaseDatabase.getInstance();
         ref = database.getReference("Devices");
@@ -235,8 +238,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
 
             Log.d(TAG, "Location Permission Already Granted");
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 10, locationListener);
             Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastLocation != null) {
                 userLat = lastLocation.getLatitude();
@@ -270,9 +273,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                         Log.d(TAG, "User Permission for Location Granted");
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener);
+                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 10, locationListener);
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER
-                                , 10000, 0, locationListener);
+                                , 0, 10, locationListener);
                         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         userLat = lastLocation.getLatitude();
                         userLon = lastLocation.getLongitude();
@@ -366,6 +369,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.buttonCallEmergency :
                 startActivity(new Intent(MainActivity.this, EmergencyActivity.class));
+                break;
+            case R.id.buttonTutorial :
+                startActivity(new Intent(MainActivity.this, Tuto1Activity.class));
 
         }
     }

@@ -13,13 +13,13 @@
     <string name="textViewTitleStepTuto5">Etape 5/5</string>
     <string name="textViewTuto1">Poursuivez la réanimation cardio-pulmonaire jusqu\'à l\'arrivée du DAE.
         Dès que celui-ci est disponible, mettez-le en marche et prenez connaissance des instructions figurant sur l\'appareil.
-        Pendant ce temps, si plusieurs sauveteurs sont présents, l'un d'eux doit poursuivre la réanimation cardio-pulmonaire.</string>
+        Pendant ce temps, si plusieurs sauveteurs sont présents, l\'un d\'eux doit poursuivre la réanimation cardio-pulmonaire.</string>
     <string name="textViewTuto2">Dénudez la poitrine de la victime et placez les électrodes à même la peau conformément aux instructions figurant sur leur emballage ou sur les électrodes elles-mêmes.
 Assurez-vous que personne ne touche la victime lorsque le DAE analyse son rythme cardiaque.</string>
     <string name="textViewTuto3">Si un choc électrique doit être administré, assurez-vous que toutes les personnes présentes sont éloignées de la victime et de son environnement immédiat.
 Appuyez sur le bouton si cela vous est demandé. Un défibrillateur entièrement automatique administrera la choc électrique sans votre intervention.</string>
     <string name="textViewTuto4">Si le DAE vous y invite, effectuez des compressions thoraciques sans tarder. Alternez les séries de 30 compressions et de 2 insufflations.
-Continuez à suivre les indications du DAE jusqu'à ce que la victime retrouve une respiration normale ou jusqu'à l'arrivée des secours.</string>
+Continuez à suivre les indications du DAE jusqu\'à ce que la victime retrouve une respiration normale ou jusqu\'à l\'arrivée des secours.</string>
     <string name="textViewTuto5">Si la respiration redevient normale, arrêtez la réanimation, mais n\'éteignez pas le DAE et laissez les électrodes en place sur la poitrine de la victime. Si celle-ci reste inconsciente, mettez-la sur le côté, en position latérale de sécurité.</string>
     <string name="textViewTutoCredits">Ces contenus sont extraits du guide des gestes qui sauvent de la Croix-Rouge française, remis à chaque participant à une formation PSC 1. Textes : Dr Pascal Cassan, Dr Daniel Meyran, Dr Vincent Hubert - Photo : Valérie Archeno - Illustrations : Philippe Diemunch - Pictogrammes : Yann Brien. </string>
 
