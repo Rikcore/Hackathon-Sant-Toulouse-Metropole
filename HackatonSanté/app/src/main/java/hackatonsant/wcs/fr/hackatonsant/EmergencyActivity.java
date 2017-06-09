@@ -88,7 +88,6 @@ public class EmergencyActivity extends AppCompatActivity {
         mapView = (MapView) findViewById(R.id.mapViewEmergency);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
         callEmergency = (Button) findViewById(R.id.buttonEmergency);
-        textViewTest = (TextView)findViewById(R.id.textViewTest);
 
         mapView.onCreate(savedInstanceState);
 

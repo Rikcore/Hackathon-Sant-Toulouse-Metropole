@@ -59,7 +59,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         android:text="Apprendre à utiliser un défibrilateur"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -127,7 +127,7 @@
             app:srcCompat="@mipmap/mini_housse" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textViewAccueil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/imageView2"
@@ -141,8 +141,8 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/textView"
-            android:layout_alignBottom="@+id/textView"
+            android:layout_alignBaseline="@+id/textViewAccueil"
+            android:layout_alignBottom="@+id/textViewAccueil"
             android:layout_marginLeft="11dp"
             android:layout_marginStart="11dp"
             android:layout_toEndOf="@+id/imageView3"
