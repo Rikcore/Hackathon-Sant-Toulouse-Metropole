@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hackatonsant.wcs.fr.hackatonsant.EmergencyActivity">
+    tools:context="hackatonsant.wcs.fr.hackatonsant.EmergencyActivity"
+    android:background="@drawable/gradientbackground">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapViewEmergency"

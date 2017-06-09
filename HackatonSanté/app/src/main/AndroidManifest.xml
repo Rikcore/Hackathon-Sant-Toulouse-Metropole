@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/notitlebar"/>
         <activity
             android:name=".SplashScreen"
             android:screenOrientation="portrait"
@@ -32,14 +34,20 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".AddDeviceActivity" />
+        <activity
+            android:name=".AddDeviceActivity"
+            android:theme="@style/notitlebar"/>
 
         <service
             android:name="com.octo.android.robospice.GsonGoogleHttpClientSpiceService"
             android:exported="false" />
 
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".EmergencyActivity" />
+        <activity
+            android:name=".SignUpActivity"
+            android:theme="@style/notitlebar"/>
+        <activity
+            android:name=".EmergencyActivity"
+            android:theme="@style/notitlebar"/>
 
         <service
             android:name=".MyService"

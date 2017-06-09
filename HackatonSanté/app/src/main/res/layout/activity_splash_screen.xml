@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="hackatonsant.wcs.fr.hackatonsant.SplashScreen"
-    android:background="@mipmap/splashscreen">
+    android:background="@mipmap/background_splashscreen">
 
 </android.support.constraint.ConstraintLayout>

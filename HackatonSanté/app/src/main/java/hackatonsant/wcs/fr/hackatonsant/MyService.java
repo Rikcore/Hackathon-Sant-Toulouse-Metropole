@@ -20,6 +20,7 @@ public class MyService extends Service {
 
     public static final String TAG = "MyService";
     public static final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Alerts");
+    AlertModel model;
 
     public MyService() {}
 
@@ -34,7 +35,7 @@ public class MyService extends Service {
 
                 boolean knows = PreferenceManager.getDefaultSharedPreferences(MyService.this).getBoolean("Knows", true);
                 if (knows) {
-                    AlertModel model = dataSnapshot.getValue(AlertModel.class);
+                    model = dataSnapshot.getValue(AlertModel.class);
 
                     displayNotification();
                 }
@@ -80,8 +81,8 @@ public class MyService extends Service {
 
         NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Notification noti = new Notification.Builder(this)
-                .setContentTitle("Wild Tech Quizz")
-                .setContentText("toto")
+                .setContentTitle("Incident en cours")
+                .setContentText("Un incident a lieu au : "+ model.getLocation())
                 .setSmallIcon(R.mipmap.minidefibrillateur)
                 .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
                 .build();
