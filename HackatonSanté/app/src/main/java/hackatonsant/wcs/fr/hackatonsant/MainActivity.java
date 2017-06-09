@@ -227,8 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             String alertId = intent.getStringExtra("Alert");
 
                             DatabaseReference boolRef = FirebaseDatabase.getInstance()
-                                    .getReference("Alerts")
-                                    .child(alertId);
+                                    .getReference("Alerts");
 
                             boolRef.setValue(null);
                             dialog.dismiss();
