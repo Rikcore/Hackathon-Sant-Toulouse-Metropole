@@ -10,11 +10,17 @@ public class AlertModel {
 
     public AlertModel(){}
 
-    public AlertModel(Double lat, Double lon, Boolean adressed) {
+    public AlertModel(Boolean adressed){
+
+        this.adressed = adressed;
+    }
+
+    public AlertModel(Double lat, Double lon, Boolean adressed, String location) {
 
         this.lat = lat;
         this.lon = lon;
         this.adressed = adressed;
+        this.location = location;
     }
 
     public Double getLat() {

@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MapView mapView;
     private GoogleMap map;
     private Marker userMarker;
-    private LatLng userPos;
+    private CustomInfoWindowAdapter mapAdapter;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FirebaseDatabase database;
     private DatabaseReference ref;
+
+    private Intent intent;
 
     private SpiceManager spiceManager = new SpiceManager(GsonGoogleHttpClientSpiceService.class);
 
@@ -89,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ref = database.getReference("Devices");
 
         mapView = (MapView) findViewById(R.id.mapView);
-
         mapView.onCreate(savedInstanceState);
+        mapAdapter = new CustomInfoWindowAdapter(MainActivity.this);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -100,10 +102,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "Position Changed");
                 userLat = location.getLatitude();
                 userLon = location.getLongitude();
-                LatLng userLocation = new LatLng(userLat, userLon);
-                updateMapWithUserPosition(userLocation);
-                performRequest(userLat, userLon);
-                Log.d(TAG, "Performed Request");
+
+                if (userLat != null) {
+                    LatLng userLocation = new LatLng(userLat, userLon);
+                    updateMapWithUserPosition(userLocation);
+                    performRequest(userLat, userLon);
+                    Log.d(TAG, "Performed Request");
+                }
             }
 
             @Override
@@ -128,11 +133,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "Map ready");
 
                 map = googleMap;
+                map.setInfoWindowAdapter(mapAdapter);
                 LatLng defautlPos = new LatLng(DEFAULT_LAT_TLSE, DEFAULT_LON_TLSE);
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.marker_man);
                 userMarker = map.addMarker(new MarkerOptions()
                         .position(defautlPos)
                         .title("Vous êtes ici")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        .icon(icon));
                 if (userLat != null & userLon != null) {
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);
@@ -149,11 +156,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Double currentLat = model.getLat();
                 Double currentLon = model.getLon();
                 String title = model.getImplantation();
-                LatLng latLng = new LatLng(currentLat, currentLon);
-                Log.d(TAG, latLng.toString());
-                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
-                map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon));
-                mapView.onResume();
+
+                if (currentLat != null) {
+                    LatLng latLng = new LatLng(currentLat, currentLon);
+                    Log.d(TAG, latLng.toString());
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
+                    map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon));
+                    mapView.onResume();
+                }
             }
 
             @Override
@@ -182,6 +192,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
+        intent = getIntent();
+        if (intent.hasExtra("Alert")) {
+
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Allez vous intervenir sur cet incident ?")
+                    .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            String alertId = intent.getStringExtra("Alert");
+
+                            DatabaseReference boolRef = FirebaseDatabase.getInstance()
+                                    .getReference("Alerts")
+                                    .child(alertId);
+
+                            boolRef.setValue(null);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+
+        }
         spiceManager.start(this);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -206,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         }
+        startService(new Intent(MainActivity.this, MyService.class));
     }
 
     @Override
@@ -298,9 +337,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 double lat = defibrillateurPublicModel.getRecords().get(i).getGeometry().getCoordinates().get(1);
                 LatLng coordinates = new LatLng(lat, lon);
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.minidefibrillateur);
-                String titleAndAdress = defibrillateurPublicModel.getRecords().get(i).getFields().getImplantation() + " " + defibrillateurPublicModel.getRecords().get(i).getFields().getAdresse();
-                String info = defibrillateurPublicModel.getRecords().get(i).getFields().getAccessibilite();
-                map.addMarker(new MarkerOptions().position(coordinates).icon(icon).title(titleAndAdress).snippet(info));
+
+                final String implantation = defibrillateurPublicModel.getRecords().get(i).getFields().getImplantation();
+                final String adress = defibrillateurPublicModel.getRecords().get(i).getFields().getAdresse();
+                String title;
+                if (implantation != null) {
+                    title = String.format("%s%n%s",
+                            adress,
+                            implantation);
+                } else {
+                    title = adress;
+                }
+                final String info = defibrillateurPublicModel.getRecords().get(i).getFields().getAccessibilite();
+                map.addMarker(new MarkerOptions().position(coordinates).icon(icon).title(title).snippet(info));
                 mapView.onResume();
             }
         }

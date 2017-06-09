@@ -9,8 +9,8 @@
     </style>
 
     <style name="notitlebar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">#FFFFFF</item>
+        <item name="colorPrimaryDark">#c11c69</item>
+        <item name="colorAccent">#060003</item>
 
     </style>
 

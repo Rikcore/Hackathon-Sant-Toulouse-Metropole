@@ -12,11 +12,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -53,15 +55,18 @@ public class EmergencyActivity extends AppCompatActivity {
     private TextView textViewAddress;
     private TextView textViewTest;
     private Button callEmergency;
+    private ConstraintLayout addressLayout;
 
     private MapView mapView;
     private GoogleMap map;
     private Marker userMarker;
     private Geocoder geocoder;
     private List<Address> addresses;
+    private String address;
 
     private FirebaseDatabase database;
-    private DatabaseReference ref;
+    private DatabaseReference refDevices;
+    private DatabaseReference refAlert;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -71,6 +76,7 @@ public class EmergencyActivity extends AppCompatActivity {
 
     private SpiceManager spiceManager = new SpiceManager(GsonGoogleHttpClientSpiceService.class);
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +84,16 @@ public class EmergencyActivity extends AppCompatActivity {
         geocoder = new Geocoder(this, Locale.getDefault());
 
         database = FirebaseDatabase.getInstance();
-        ref = database.getReference("Devices");
+        refDevices = database.getReference("Devices");
+        refAlert = database.getReference("Alerts");
+
 
         mapView = (MapView) findViewById(R.id.mapViewEmergency);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
         callEmergency = (Button) findViewById(R.id.buttonEmergency);
-        textViewTest = (TextView)findViewById(R.id.textViewTest);
+        addressLayout = (ConstraintLayout) findViewById(R.id.addressLayout);
+        addressLayout.setVisibility(View.INVISIBLE);
+
 
         mapView.onCreate(savedInstanceState);
 
@@ -106,14 +116,15 @@ public class EmergencyActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                 String city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
                 String country = addresses.get(0).getCountryName();
                 String postalCode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();
 
-                textViewAddress.setText("Adresse à donner aux secours: " + address + " " + postalCode + " " + city);
+                addressLayout.setVisibility(View.VISIBLE);
+                textViewAddress.setText(String.format("Adresse à donner aux secours :%n%s%n%s %s",address,postalCode,city));
 
             }
 
@@ -140,10 +151,11 @@ public class EmergencyActivity extends AppCompatActivity {
 
                 map = googleMap;
                 LatLng defautlPos = new LatLng(MainActivity.DEFAULT_LAT_TLSE, MainActivity.DEFAULT_LON_TLSE);
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.marker_man);
                 userMarker = map.addMarker(new MarkerOptions()
                         .position(defautlPos)
                         .title("Vous êtes ici")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        .icon(icon));
                 if (userLat != null & userLon != null) {
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);
@@ -151,38 +163,7 @@ public class EmergencyActivity extends AppCompatActivity {
             }
         });
 
-        callEmergency.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String number = "+33698631580";
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + number));
-                if (ActivityCompat.checkSelfPermission(EmergencyActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    if (ContextCompat.checkSelfPermission(EmergencyActivity.this, Manifest.permission.CALL_PHONE)
-                            != PackageManager.PERMISSION_GRANTED) {
-
-                        Log.d(TAG, "Location Permission refused, asking user");
-
-                        ActivityCompat.requestPermissions(EmergencyActivity.this,
-                                new String[]{
-                                        Manifest.permission.CALL_PHONE
-                                }, 1);
-                    }
-
-                    return;
-                }
-                startActivity(intent);
-            }
-        });
-
-        ref.addChildEventListener(new ChildEventListener() {
+        refDevices.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
@@ -191,10 +172,14 @@ public class EmergencyActivity extends AppCompatActivity {
                 Double currentLat = model.getLat();
                 Double currentLon = model.getLon();
                 String title = model.getImplantation();
-                LatLng latLng = new LatLng(currentLat, currentLon);
-                Log.d(TAG, latLng.toString());
-                map.addMarker(new MarkerOptions().position(latLng).title(title));
-                mapView.onResume();
+
+                if (currentLat != null) {
+                    LatLng latLng = new LatLng(currentLat, currentLon);
+                    Log.d(TAG, latLng.toString());
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
+                    map.addMarker(new MarkerOptions().position(latLng).title(title));
+                    mapView.onResume();
+                }
             }
 
             @Override
@@ -215,6 +200,36 @@ public class EmergencyActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        callEmergency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertModel alertModel = new AlertModel(userLat, userLon, false, address);
+                refAlert.push().setValue(alertModel);
+
+
+                String number = "+33698631580";
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + number));
+                if (ActivityCompat.checkSelfPermission(EmergencyActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+                    if (ContextCompat.checkSelfPermission(EmergencyActivity.this, Manifest.permission.CALL_PHONE)
+                            != PackageManager.PERMISSION_GRANTED) {
+
+                        Log.d(TAG, "Location Permission refused, asking user");
+
+                        ActivityCompat.requestPermissions(EmergencyActivity.this,
+                                new String[]{
+                                        Manifest.permission.CALL_PHONE
+                                }, 1);
+                    }
+
+                    return;
+                }
+                startActivity(intent);
             }
         });
     }
@@ -296,6 +311,14 @@ public class EmergencyActivity extends AppCompatActivity {
                             .show();
                 }
             }
+            case 1 :
+
+                String number = "+33698631580";
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + number));
+                startActivity(intent);
+
+
         }
     }
 
