@@ -82,7 +82,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_layou"
+        android:background="@drawable/rounded_layout"
         android:elevation="4dp"
         android:padding="10dp"
         android:text="Bienvenue sur Defib' Toulouse, pour votre première visite, nous avons besoin de quelques informations. Rassurez-vous, aucune information personnelle n'est stockée en ligne."

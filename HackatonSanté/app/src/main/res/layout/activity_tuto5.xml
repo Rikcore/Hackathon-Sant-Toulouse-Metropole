@@ -26,6 +26,9 @@
 
     <TextView
         android:id="@+id/textViewTuto5"
+        android:background="@drawable/rounded_textview"
+        android:elevation="4dp"
+        android:padding="10dp"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -42,6 +45,7 @@
         android:id="@+id/textViewCredits"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="57dp"
@@ -54,7 +58,7 @@
 
     <Button
         android:id="@+id/buttonTutoReturnMain"
-        android:background="@drawable/button_shape"
+        android:background="@drawable/button_shape_pink"
         android:textColor="#FFFFFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
