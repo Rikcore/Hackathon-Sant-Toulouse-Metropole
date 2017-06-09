@@ -101,10 +101,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "Position Changed");
                 userLat = location.getLatitude();
                 userLon = location.getLongitude();
-                LatLng userLocation = new LatLng(userLat, userLon);
-                updateMapWithUserPosition(userLocation);
-                performRequest(userLat, userLon);
-                Log.d(TAG, "Performed Request");
+
+                if (userLat != null) {
+                    LatLng userLocation = new LatLng(userLat, userLon);
+                    updateMapWithUserPosition(userLocation);
+                    performRequest(userLat, userLon);
+                    Log.d(TAG, "Performed Request");
+                }
             }
 
             @Override
@@ -150,11 +153,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Double currentLat = model.getLat();
                 Double currentLon = model.getLon();
                 String title = model.getImplantation();
-                LatLng latLng = new LatLng(currentLat, currentLon);
-                Log.d(TAG, latLng.toString());
-                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
-                map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon));
-                mapView.onResume();
+
+                if (currentLat != null) {
+                    LatLng latLng = new LatLng(currentLat, currentLon);
+                    Log.d(TAG, latLng.toString());
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
+                    map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon));
+                    mapView.onResume();
+                }
             }
 
             @Override
@@ -191,8 +197,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
                             String alertId = intent.getStringExtra("Alert");
-                            ref.child(alertId).removeValue();
+
+                            DatabaseReference boolRef = FirebaseDatabase.getInstance()
+                                    .getReference("Alerts")
+                                    .child(alertId)
+                                    .child("adressed");
+
+                            boolRef.setValue(true);
                             dialog.dismiss();
                         }
                     })

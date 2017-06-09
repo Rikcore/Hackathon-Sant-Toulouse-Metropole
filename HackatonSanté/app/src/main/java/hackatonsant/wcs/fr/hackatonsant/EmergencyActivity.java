@@ -165,10 +165,13 @@ public class EmergencyActivity extends AppCompatActivity {
                 Double currentLat = model.getLat();
                 Double currentLon = model.getLon();
                 String title = model.getImplantation();
-                LatLng latLng = new LatLng(currentLat, currentLon);
-                Log.d(TAG, latLng.toString());
-                map.addMarker(new MarkerOptions().position(latLng).title(title));
-                mapView.onResume();
+
+                if (currentLat != null) {
+                    LatLng latLng = new LatLng(currentLat, currentLon);
+                    Log.d(TAG, latLng.toString());
+                    map.addMarker(new MarkerOptions().position(latLng).title(title));
+                    mapView.onResume();
+                }
             }
 
             @Override
