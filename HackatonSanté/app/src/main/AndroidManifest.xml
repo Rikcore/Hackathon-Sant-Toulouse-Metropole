@@ -42,12 +42,23 @@
             android:name="com.octo.android.robospice.GsonGoogleHttpClientSpiceService"
             android:exported="false" />
 
+
+      
+        <activity android:name=".Tuto1Activity"/>
+        <activity android:name=".Tuto2Activity"/>
+        <activity android:name=".Tuto3Activity"/>
+        <activity android:name=".Tuto4Activity"/>
+        <activity android:name=".Tuto5Activity"/>
+
+
+
         <activity
             android:name=".SignUpActivity"
             android:theme="@style/notitlebar"/>
         <activity
             android:name=".EmergencyActivity"
             android:theme="@style/notitlebar"/>
+
 
         <service
             android:name=".MyService"
