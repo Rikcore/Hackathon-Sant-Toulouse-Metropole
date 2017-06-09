@@ -91,7 +91,7 @@ public class MyService extends Service {
                     float[] results = new float[1];
                     Location.distanceBetween(alertLat, alertLon, userLat, userLon, results);
 
-                    if (results[0] <= 500 && !model.adressed) {
+                    if (/*results[0] <= 500 && */!model.adressed) {
                         displayNotification(alertId);
                     }
                 }
@@ -137,7 +137,7 @@ public class MyService extends Service {
 
         NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(this, MainActivity.class);
-        String finalAlertId = alertId;
+        final String finalAlertId = alertId;
         intent.putExtra("Alert", finalAlertId);
         Notification noti = new Notification.Builder(this)
                 .setContentTitle("Incident en cours")
