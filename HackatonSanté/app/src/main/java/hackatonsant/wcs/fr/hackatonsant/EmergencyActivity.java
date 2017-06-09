@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -53,13 +54,15 @@ public class EmergencyActivity extends AppCompatActivity {
     public static final int DEFAULT_RADIUS = 5000;
 
     private TextView textViewAddress;
-    private TextView textViewTest;
     private Button callEmergency;
+    private FloatingActionButton fab;
     private ConstraintLayout addressLayout;
 
     private MapView mapView;
     private GoogleMap map;
     private Marker userMarker;
+    private CustomInfoWindowAdapter mapAdapter;
+
     private Geocoder geocoder;
     private List<Address> addresses;
     private String address;
@@ -89,8 +92,10 @@ public class EmergencyActivity extends AppCompatActivity {
 
 
         mapView = (MapView) findViewById(R.id.mapViewEmergency);
+        mapAdapter = new CustomInfoWindowAdapter(EmergencyActivity.this);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
         callEmergency = (Button) findViewById(R.id.buttonEmergency);
+        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         addressLayout = (ConstraintLayout) findViewById(R.id.addressLayout);
         addressLayout.setVisibility(View.INVISIBLE);
 
@@ -150,6 +155,7 @@ public class EmergencyActivity extends AppCompatActivity {
                 Log.d(TAG, "Map ready");
 
                 map = googleMap;
+                map.setInfoWindowAdapter(mapAdapter);
                 LatLng defautlPos = new LatLng(MainActivity.DEFAULT_LAT_TLSE, MainActivity.DEFAULT_LON_TLSE);
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.marker_man);
                 userMarker = map.addMarker(new MarkerOptions()
@@ -160,6 +166,7 @@ public class EmergencyActivity extends AppCompatActivity {
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);
                 }
+                map.animateCamera(CameraUpdateFactory.zoomTo(15));
             }
         });
 
@@ -171,13 +178,27 @@ public class EmergencyActivity extends AppCompatActivity {
 
                 Double currentLat = model.getLat();
                 Double currentLon = model.getLon();
-                String title = model.getImplantation();
+                String adress = model.getAdresse();
+                String implantation = model.getImplantation();
+                String info = model.getAccessibilite();
+                String title;
+                if(implantation != null){
+                    title = String.format("%s%n%s",
+                            adress,
+                            implantation);
+                } else {
+                    title = adress;
+                }
+
+                if (info == null){
+                    info = "Pas d'information d'accessibilité";
+                }
 
                 if (currentLat != null) {
                     LatLng latLng = new LatLng(currentLat, currentLon);
                     Log.d(TAG, latLng.toString());
                     BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
-                    map.addMarker(new MarkerOptions().position(latLng).title(title));
+                    map.addMarker(new MarkerOptions().position(latLng).title(title).snippet(info).icon(icon));
                     mapView.onResume();
                 }
             }
@@ -230,6 +251,14 @@ public class EmergencyActivity extends AppCompatActivity {
                     return;
                 }
                 startActivity(intent);
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LatLng userPosition = new LatLng(userLat, userLon);
+                map.moveCamera(CameraUpdateFactory.newLatLng(userPosition));
             }
         });
     }
@@ -326,7 +355,6 @@ public class EmergencyActivity extends AppCompatActivity {
 
         userMarker.setPosition(latLng);
         map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        map.animateCamera(CameraUpdateFactory.zoomTo(15));
         Log.d(TAG, "Map Updated");
         mapView.onResume();
     }
@@ -362,9 +390,18 @@ public class EmergencyActivity extends AppCompatActivity {
                 double lat = defibrillateurPublicModel.getRecords().get(i).getGeometry().getCoordinates().get(1);
                 LatLng coordinates = new LatLng(lat, lon);
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.minidefibrillateur);
-                String titleAndAdress = defibrillateurPublicModel.getRecords().get(i).getFields().getImplantation() + " " + defibrillateurPublicModel.getRecords().get(i).getFields().getAdresse();
-                String info = defibrillateurPublicModel.getRecords().get(i).getFields().getAccessibilite();
-                map.addMarker(new MarkerOptions().position(coordinates).icon(icon).title(titleAndAdress).snippet(info));
+                final String implantation = defibrillateurPublicModel.getRecords().get(i).getFields().getImplantation();
+                final String adress = defibrillateurPublicModel.getRecords().get(i).getFields().getAdresse();
+                String title;
+                if (implantation != null) {
+                    title = String.format("%s%n%s",
+                            adress,
+                            implantation);
+                } else {
+                    title = adress;
+                }
+                final String info = defibrillateurPublicModel.getRecords().get(i).getFields().getAccessibilite();
+                map.addMarker(new MarkerOptions().position(coordinates).icon(icon).title(title).snippet(info));
                 mapView.onResume();
             }
         }

@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -62,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonAddDeviceMain;
     private Button buttonEmergency;
 
+    private FloatingActionButton fab;
+
     private FirebaseDatabase database;
     private DatabaseReference ref;
 
@@ -86,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonAddDeviceMain.setOnClickListener(this);
         buttonEmergency = (Button)findViewById(R.id.buttonCallEmergency);
         buttonEmergency.setOnClickListener(this);
+
+        fab = (FloatingActionButton) findViewById(R.id.floatingActionButtonMain);
+        fab.setOnClickListener(this);
 
         database = FirebaseDatabase.getInstance();
         ref = database.getReference("Devices");
@@ -155,13 +161,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 Double currentLat = model.getLat();
                 Double currentLon = model.getLon();
-                String title = model.getImplantation();
+                String adress = model.getAdresse();
+                String implantation = model.getImplantation();
+                String info = model.getAccessibilite();
+                String title;
+                if(implantation != null){
+                    title = String.format("%s%n%s",
+                            adress,
+                            implantation);
+                } else {
+                    title = adress;
+                }
+
+                if (info == null){
+                    info = "Pas d'information d'accessibilité";
+                }
 
                 if (currentLat != null) {
                     LatLng latLng = new LatLng(currentLat, currentLon);
                     Log.d(TAG, latLng.toString());
                     BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.mini_housse);
-                    map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon));
+                    map.addMarker(new MarkerOptions().position(latLng).title(title).snippet(info).icon(icon));
                     mapView.onResume();
                 }
             }
@@ -365,8 +385,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(MainActivity.this, AddDeviceActivity.class));
                 break;
             case R.id.buttonCallEmergency :
-                startActivity(new Intent(MainActivity.this, EmergencyActivity.class));
 
+                startActivity(new Intent(MainActivity.this, EmergencyActivity.class));
+                break;
+            case R.id.floatingActionButtonMain :
+
+                LatLng userPosition = new LatLng(userLat, userLon);
+                map.moveCamera(CameraUpdateFactory.newLatLng(userPosition));
         }
     }
 }

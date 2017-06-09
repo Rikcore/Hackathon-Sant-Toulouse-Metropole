@@ -103,6 +103,17 @@
             android:layout_toEndOf="@+id/imageView3"
             android:layout_toRightOf="@+id/imageView3"
             android:text="Défibrillateurs privés" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/fab_button"
+            android:layout_alignTop="@+id/mapViewEmergency"
+            android:layout_alignRight="@+id/mapViewEmergency"
+            android:layout_alignEnd="@+id/mapViewEmergency" />
     </RelativeLayout>
 
     <android.support.constraint.ConstraintLayout
