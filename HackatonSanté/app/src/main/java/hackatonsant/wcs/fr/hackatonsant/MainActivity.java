@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MapView mapView;
     private GoogleMap map;
     private Marker userMarker;
+    private CustomInfoWindowAdapter mapAdapter;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -90,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ref = database.getReference("Devices");
 
         mapView = (MapView) findViewById(R.id.mapView);
-
         mapView.onCreate(savedInstanceState);
+        mapAdapter = new CustomInfoWindowAdapter(MainActivity.this);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -131,9 +132,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onMapReady(GoogleMap googleMap) {
                 Log.d(TAG, "Map ready");
 
-
-
                 map = googleMap;
+                map.setInfoWindowAdapter(mapAdapter);
                 LatLng defautlPos = new LatLng(DEFAULT_LAT_TLSE, DEFAULT_LON_TLSE);
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.marker_man);
                 userMarker = map.addMarker(new MarkerOptions()
@@ -337,9 +337,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 double lat = defibrillateurPublicModel.getRecords().get(i).getGeometry().getCoordinates().get(1);
                 LatLng coordinates = new LatLng(lat, lon);
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.minidefibrillateur);
-                String titleAndAdress = defibrillateurPublicModel.getRecords().get(i).getFields().getImplantation() + " " + defibrillateurPublicModel.getRecords().get(i).getFields().getAdresse();
-                String info = defibrillateurPublicModel.getRecords().get(i).getFields().getAccessibilite();
-                map.addMarker(new MarkerOptions().position(coordinates).icon(icon).title(titleAndAdress).snippet(info));
+
+                final String implantation = defibrillateurPublicModel.getRecords().get(i).getFields().getImplantation();
+                final String adress = defibrillateurPublicModel.getRecords().get(i).getFields().getAdresse();
+                String title;
+                if (implantation != null) {
+                    title = String.format("%s%n%s",
+                            adress,
+                            implantation);
+                } else {
+                    title = adress;
+                }
+                final String info = defibrillateurPublicModel.getRecords().get(i).getFields().getAccessibilite();
+                map.addMarker(new MarkerOptions().position(coordinates).icon(icon).title(title).snippet(info));
                 mapView.onResume();
             }
         }
