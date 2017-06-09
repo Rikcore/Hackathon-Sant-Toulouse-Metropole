@@ -285,8 +285,8 @@ public class EmergencyActivity extends AppCompatActivity {
         } else {
 
             Log.d(TAG, "Location Permission Already Granted");
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30000, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
             Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastLocation != null) {
                 userLat = lastLocation.getLatitude();
@@ -318,9 +318,10 @@ public class EmergencyActivity extends AppCompatActivity {
                             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                         Log.d(TAG, "User Permission for Location Granted");
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3000, 0, locationListener);
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER
-                                , 3000, 0, locationListener);
+                        locationManager.requestLocationUpdates(LocationManager
+                                .NETWORK_PROVIDER, 5000, 0, locationListener);
+                        locationManager.requestLocationUpdates(LocationManager
+                                        .GPS_PROVIDER, 5000, 0, locationListener);
                         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         userLat = lastLocation.getLatitude();
                         userLon = lastLocation.getLongitude();

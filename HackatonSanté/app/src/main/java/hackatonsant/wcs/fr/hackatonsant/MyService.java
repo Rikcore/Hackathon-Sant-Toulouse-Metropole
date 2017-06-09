@@ -7,6 +7,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,6 +18,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -139,10 +143,12 @@ public class MyService extends Service {
         Intent intent = new Intent(this, MainActivity.class);
         final String finalAlertId = alertId;
         intent.putExtra("Alert", finalAlertId);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.defibrillateur);
         Notification noti = new Notification.Builder(this)
                 .setContentTitle("Incident en cours")
                 .setContentText("Un incident a lieu au : "+ model.getLocation())
-                .setSmallIcon(R.mipmap.minidefibrillateur)
+                .setSmallIcon(R.mipmap.defibrillateur)
+                .setLargeIcon(bitmap)
                 .setContentIntent(PendingIntent.getActivity(this, 0, intent, 0))
                 .build();
 
