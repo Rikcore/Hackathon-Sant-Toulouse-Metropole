@@ -7,9 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-/**
- * Created by apprenti on 08/06/17.
- */
 
 
 public class Tuto1Activity extends AppCompatActivity  {
@@ -24,7 +21,6 @@ public class Tuto1Activity extends AppCompatActivity  {
 
         buttonSkipTuto1 = (Button) findViewById(R.id.buttonSkipTuto1);
         textViewTuto1 = (TextView)findViewById(R.id.textViewTuto1);
-        //textViewTuto1.setText(R.string.textViewTitleStepTuto1);
 
         buttonSkipTuto1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +29,7 @@ public class Tuto1Activity extends AppCompatActivity  {
                 Intent tuto2 = new Intent(Tuto1Activity.this, Tuto2Activity.class);
 
                 startActivity(tuto2);
+                finish();
             }
         });
     }
