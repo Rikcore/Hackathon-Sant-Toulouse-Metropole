@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -85,6 +86,7 @@ public class EmergencyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergency);
         geocoder = new Geocoder(this, Locale.getDefault());
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         database = FirebaseDatabase.getInstance();
         refDevices = database.getReference("Devices");
@@ -166,7 +168,7 @@ public class EmergencyActivity extends AppCompatActivity {
                     LatLng userPosition = new LatLng(userLat, userLon);
                     updateMapWithUserPosition(userPosition);
                 }
-                map.animateCamera(CameraUpdateFactory.zoomTo(15));
+
             }
         });
 
@@ -285,8 +287,8 @@ public class EmergencyActivity extends AppCompatActivity {
         } else {
 
             Log.d(TAG, "Location Permission Already Granted");
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastLocation != null) {
                 userLat = lastLocation.getLatitude();
@@ -319,9 +321,9 @@ public class EmergencyActivity extends AppCompatActivity {
 
                         Log.d(TAG, "User Permission for Location Granted");
                         locationManager.requestLocationUpdates(LocationManager
-                                .NETWORK_PROVIDER, 5000, 0, locationListener);
+                                .NETWORK_PROVIDER, 0, 0, locationListener);
                         locationManager.requestLocationUpdates(LocationManager
-                                        .GPS_PROVIDER, 5000, 0, locationListener);
+                                        .GPS_PROVIDER, 0, 0, locationListener);
                         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         userLat = lastLocation.getLatitude();
                         userLon = lastLocation.getLongitude();
@@ -357,6 +359,7 @@ public class EmergencyActivity extends AppCompatActivity {
         userMarker.setPosition(latLng);
         map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         Log.d(TAG, "Map Updated");
+        map.animateCamera(CameraUpdateFactory.zoomTo(15));
         mapView.onResume();
     }
 

@@ -1,6 +1,7 @@
 package hackatonsant.wcs.fr.hackatonsant;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         checkBoxKnow = (CheckBox) findViewById(R.id.checkBoxKnow);
         checkBoxOwn = (CheckBox) findViewById(R.id.checkBoxOwn);
@@ -46,7 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 boolean owns = checkBoxOwn.isChecked();
                 boolean knows = checkBoxKnow.isChecked();
-                if (editTextName.getText() == null){
+                if (editTextName.getText().length() == 0){
                     Toast.makeText(SignUpActivity.this, "Vous devez renseigner votre nom", Toast.LENGTH_SHORT).show();
                 } else {
                     String userName = editTextName.getText().toString();
