@@ -2,6 +2,7 @@ package hackatonsant.wcs.fr.hackatonsant;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,6 +47,7 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_device);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         editTextAdresse = (EditText) findViewById(R.id.editTextAdresse);
         editTextAccessibilite = (EditText) findViewById(R.id.editTextAccessibilite);
@@ -159,10 +162,15 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()){
 
             case R.id.buttonAddDevice:
+                if(editTextAdresse.getText().length() == 0){
+                    Toast.makeText(this, "Veuillez renseigner une adresse.", Toast.LENGTH_SHORT).show();
+                } else {
 
-                DefibrilateurPrivateModel finalDevice = createPrivateDevice();
-                ref.push().setValue(finalDevice);
-                startActivity(new Intent(AddDeviceActivity.this, MainActivity.class));
+
+                    DefibrilateurPrivateModel finalDevice = createPrivateDevice();
+                    ref.push().setValue(finalDevice);
+                    startActivity(new Intent(AddDeviceActivity.this, MainActivity.class));
+                }
 
         }
     }
